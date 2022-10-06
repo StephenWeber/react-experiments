@@ -20,11 +20,25 @@ class Features extends React.Component {
     render () {
         return (
             <div>
-                <label><input type="radio" name="radio" value="yes" /> Yes</label>
+                <SizeFeature checked={true} />
                 <label><input type="radio" name="radio" value="no" /> No</label>
             </div>
         )
     }
+}
+
+class SizeFeature extends React.Component {
+    render() {
+        return (
+            <label>
+                <input
+                type="radio" value="yes"
+                checked={this.props.checked}
+                />
+                Yes
+            </label>
+    )
+}
 }
 
 class Terrafrom extends React.Component {
