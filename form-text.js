@@ -1,14 +1,28 @@
+const RDSProps = {
+    "instance-type": {type: "radio", choices: {
+        Yes: "You've chosen yes",
+        No: "No, thank you"
+    }},
+}
+
 class Something extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            selected: "Yes"
+        }
+    }
+
     render () {
         return (
             <div>
                 <h1>Hello Forms!</h1>
                 <div className="float-container">
                     <div className="float-child">
-                        <Features />
+                        <Features selected={this.state.selected} />
                     </div>
                     <div className="float-child">
-                        <Terrafrom />
+                        <Terraform message={RDSProps["instance-type"].choices[this.state.selected]} />
                     </div>
                 </div>
             </div>
@@ -20,8 +34,8 @@ class Features extends React.Component {
     render () {
         return (
             <div>
-                <SizeFeature checked={true} />
-                <label><input type="radio" name="radio" value="no" /> No</label>
+                <SizeFeature checked={this.props.selected == "Yes"} label="Yes" />
+                <SizeFeature checked={this.props.selected == "No "} label="No" />
             </div>
         )
     }
@@ -35,17 +49,23 @@ class SizeFeature extends React.Component {
                 type="radio" value="yes"
                 checked={this.props.checked}
                 />
-                Yes
+                {this.props.label}
             </label>
-    )
-}
+        )
+    }
 }
 
-class Terrafrom extends React.Component {
+class Terraform extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            message: props.message
+        };
+    }
     render () {
         return (
             <textarea name="textarea" rows="5" cols="30" 
-                value="I am a read-only textarea."
+                value={this.state.message}
                 readOnly>
             </textarea>
         )
