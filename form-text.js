@@ -8,9 +8,18 @@ const RDSProps = {
 class Something extends React.Component {
     constructor(props) {
         super(props);
+        this.handleChange = this.handleChange.bind(this);
         this.state = {
-            selected: "Yes"
+            selected: "Yes",
+            message: RDSProps["instance-type"].choices["Yes"]
         }
+    }
+
+    handleChange(event) {
+        this.setState({
+            selected: event,
+            message: RDSProps["instance-type"].choices[event]
+        })
     }
 
     render () {
@@ -19,10 +28,10 @@ class Something extends React.Component {
                 <h1>Hello Forms!</h1>
                 <div className="float-container">
                     <div className="float-child">
-                        <Features selected={this.state.selected} />
+                        <Features selected={this.state.selected} onChange={this.handleChange}/>
                     </div>
                     <div className="float-child">
-                        <Terraform message={RDSProps["instance-type"].choices[this.state.selected]} />
+                        <Terraform message={this.state.message} />
                     </div>
                 </div>
             </div>
@@ -34,19 +43,27 @@ class Features extends React.Component {
     render () {
         return (
             <div>
-                <SizeFeature checked={this.props.selected == "Yes"} label="Yes" />
-                <SizeFeature checked={this.props.selected == "No "} label="No" />
+                <SizeFeature checked={this.props.selected == "Yes"} label="Yes" onChange={this.props.onChange} />
+                <SizeFeature checked={this.props.selected == "No"} label="No" onChange={this.props.onChange} />
             </div>
         )
     }
 }
 
 class SizeFeature extends React.Component {
+    constructor(props) {
+        super(props);
+        this.handleChange = this.handleChange.bind(this);
+    }
+    handleChange(e) {
+        this.props.onChange(e.target.value);
+    }
     render() {
         return (
             <label>
                 <input
-                type="radio" value="yes"
+                type="radio" value={this.props.label}
+                onChange={this.handleChange}
                 checked={this.props.checked}
                 />
                 {this.props.label}
@@ -56,16 +73,10 @@ class SizeFeature extends React.Component {
 }
 
 class Terraform extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            message: props.message
-        };
-    }
     render () {
         return (
             <textarea name="textarea" rows="5" cols="30" 
-                value={this.state.message}
+                value={this.props.message}
                 readOnly>
             </textarea>
         )
