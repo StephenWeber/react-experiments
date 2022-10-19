@@ -1,24 +1,36 @@
 const RDSProps = {
     "instance-type": {type: "radio", choices: {
-        Yes: "You've chosen yes",
-        No: "No, thank you"
+        Intel: "db.r5.8xlarge",
+        Graviton: "db.r6i.8xlarge"
     }},
 }
+
+const tfTemplate = `resource "aws_rds_cluster" "example" {
+    cluster_identifier        = "example"
+    availability_zones        = ["us-west-2a", "us-west-2b", "us-west-2c"]
+    engine                    = "mysql"
+    db_cluster_instance_class = "INSTANCE_TYPE"
+    storage_type              = "io1"
+    allocated_storage         = 100
+    iops                      = 1000
+    master_username           = "test"
+    master_password           = "mustbeeightcharaters"
+}`
 
 class Something extends React.Component {
     constructor(props) {
         super(props);
         this.handleChange = this.handleChange.bind(this);
         this.state = {
-            selected: "Yes",
-            message: RDSProps["instance-type"].choices["Yes"]
+            selected: "Default",
+            message: tfTemplate
         }
     }
 
     handleChange(event) {
         this.setState({
             selected: event,
-            message: RDSProps["instance-type"].choices[event]
+            message: tfTemplate.replace("INSTANCE_TYPE", RDSProps["instance-type"].choices[event])
         })
     }
 
@@ -43,8 +55,9 @@ class Features extends React.Component {
     render () {
         return (
             <div>
-                <SizeFeature checked={this.props.selected == "Yes"} label="Yes" onChange={this.props.onChange} />
-                <SizeFeature checked={this.props.selected == "No"} label="No" onChange={this.props.onChange} />
+                {Object.keys(RDSProps["instance-type"].choices).map((item, index) => {
+                    return <SizeFeature checked={this.props.selected == item} label={item} onChange={this.props.onChange}/>
+                })}
             </div>
         )
     }
