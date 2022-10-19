@@ -8,7 +8,7 @@ const RDSProps = {
 const tfTemplate = `resource "aws_rds_cluster" "example" {
     cluster_identifier        = "example"
     availability_zones        = ["us-west-2a", "us-west-2b", "us-west-2c"]
-    engine                    = "mysql"
+    engine                    = "aurora-postgresql"
     db_cluster_instance_class = "INSTANCE_TYPE"
     storage_type              = "io1"
     allocated_storage         = 100
@@ -27,6 +27,10 @@ class Something extends React.Component {
         }
     }
 
+    componentDidMount() {
+        this.handleChange("Intel");
+    }
+
     handleChange(event) {
         this.setState({
             selected: event,
@@ -40,6 +44,7 @@ class Something extends React.Component {
                 <h1>Hello Forms!</h1>
                 <div className="float-container">
                     <div className="float-child">
+                        <h2>Instance Class</h2>
                         <Features selected={this.state.selected} onChange={this.handleChange}/>
                     </div>
                     <div className="float-child">
@@ -56,7 +61,7 @@ class Features extends React.Component {
         return (
             <div>
                 {Object.keys(RDSProps["instance-type"].choices).map((item, index) => {
-                    return <SizeFeature checked={this.props.selected == item} label={item} onChange={this.props.onChange}/>
+                    return <SizeFeature checked={this.props.selected == item} label={item} onChange={this.props.onChange} key={index}/>
                 })}
             </div>
         )
@@ -88,7 +93,7 @@ class SizeFeature extends React.Component {
 class Terraform extends React.Component {
     render () {
         return (
-            <textarea name="textarea" rows="5" cols="30" 
+            <textarea name="textarea" rows="12" cols="80" 
                 value={this.props.message}
                 readOnly>
             </textarea>
